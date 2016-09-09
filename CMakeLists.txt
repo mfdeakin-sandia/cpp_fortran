@@ -5,7 +5,10 @@ project(cpp_fortran)
 
 enable_language(Fortran)
 
+include(CTest)
+
 get_filename_component(Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
+get_filename_component(C_COMPILER_NAME ${CMAKE_C_COMPILER} NAME)
 
 if(Fortran_COMPILER_NAME MATCHES "gfortran.*")
   # gfortran
@@ -27,6 +30,7 @@ else(Fortran_COMPILER_NAME MATCHES "gfortran.*")
   set(CMAKE_Fortran_FLAGS_DEBUG   "-O0 -g")
 endif(Fortran_COMPILER_NAME MATCHES "gfortran.*")
 
+message("C Compiler: ${C_COMPILER_NAME}")
 message("CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
 
 find_package(OpenMP)
@@ -41,6 +45,13 @@ endif()
 add_library(clib clib.c)
 add_executable(cpp_fortran main.f90)
 target_link_libraries(cpp_fortran clib)
+
+# Example of tests
+# Run in parallel with 'ctest -j $n'
+add_test(test_run1 cpp_fortran)
+add_test(test_run2 cpp_fortran)
+add_test(test_run3 cpp_fortran)
+add_test(test_run4 cpp_fortran)
 
 if(OPENMP_FOUND)
   set_target_properties(cpp_fortran PROPERTIES LINK_FLAGS "${OpenMP_Fortran_FLAGS}")
